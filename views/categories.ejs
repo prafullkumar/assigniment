@@ -1,0 +1,52 @@
+<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Product List</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <h1>Category List</h1>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>CategoryId</th>
+          <th>CategoryName</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% categories.forEach(category => { %>
+          <tr>
+            <td><%= category.CategoryId %></td>
+            <td><%= category.CategoryName %></td>
+            <td>
+              <a href="/categories/<%= category.CategoryId%>?edit=true">Edit</a> &nbsp;  
+              <a href="/categories/delete/<%=category.CategoryId%>">Delete</a></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    <div class="pagination">
+      <% 
+      if (currentPage > 1) { %>
+        <a href="/categories?page=<%= currentPage - 1 %>">Previous</a>
+      <% } %>
+      <span>Page <%= currentPage %></span>
+      <% if(categories.length === pageSize) { 
+        let nextPage=currentPage+1;%>
+        <a href="/categories?page=<%= parseInt(currentPage) + 1 %>">Next</a>
+      <% } %>
+    </div>
+    <form action="/<% if(editMode){%>categories/<%=id%> <%}else{%>categories<%}%>" method="post">
+      <label for="productName">Category Name:</label>
+      <input type="text" id="CategoryName" name="CategoryName" required
+      value="<% if(editMode){%> <%= categories[0].CategoryName %> <%}%>" >
+      <br>
+      <button type="submit"><% if(editMode){%> Update <%}else{%>Add Category<%}%></button>
+      <br>
+      <a href="/products">Go To Product</a>
+    </form>
+  </body>
+</html>

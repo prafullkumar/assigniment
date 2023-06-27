@@ -1,0 +1,71 @@
+<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Product List</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <h1>Product List</h1>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>ProductId</th>
+          <th>ProductName</th>
+          <th>CategoryId</th>
+          <th>CategoryName</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% products.forEach(product => { %>
+          <tr>
+            <td><%= product.ProductId %></td>
+            <td><%= product.ProductName %></td>
+            <td><%= product.CategoryId %></td>
+            <td><%= product.CategoryName %></td>
+            <td><a href="/products/<%=product.ProductId%>?edit=true">Edit</a> &nbsp; 
+              <a href="/products/delete/<%=product.ProductId%>">Delete</a></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    <div class="pagination">
+      <% 
+      if (currentPage > 1) { %>
+        <a href="/products?page=<%= currentPage - 1 %>">Previous</a>
+      <% } %>
+      <span>Page <%= currentPage %></span>
+      <% if(products.length === pageSize) { 
+        let nextPage=currentPage+1;%>
+        <a href="/products?page=<%= parseInt(currentPage) + 1 %>">Next</a>
+      <% } %>
+    </div>
+    <form action="/<% if(editMode){%>products/<%=id%> <%}else{%>products<%}%>" method="post">
+      <label for="productName">Product Name:</label>
+      <input type="text" id="productName" name="productName" required
+      value="<% if(editMode){%> <%= products[0].ProductName %> <%}%>" >
+
+      <label for="categoryId">Category Name:</label>
+          <select name="categoryId" >
+            <option>Select category</option>
+            <% categories.forEach(category => { %>
+              <option value="<%=category.CategoryId%>" 
+                <% 
+                if(editMode){%>
+                 
+                  <% if(category.CategoryId===products[0].CategoryId ) { %> selected<% } %>
+                 
+                 <%}%>
+                 
+                 ><%=category.CategoryName%></option>
+            <% }); %>  
+          </select>
+          <br>
+          <button type="submit"><% if(editMode){%> Update <%}else{%>Add Product<%}%></button>
+          <br>
+          <a href="/categories">Go To Categories</a>
+    </form>
+  </body>
+</html>
